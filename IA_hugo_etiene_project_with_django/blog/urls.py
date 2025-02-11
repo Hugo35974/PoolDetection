@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
 
-    path('pool-settings/', views.pool_settings, name='pool-settings'),
+    path('pool_settings/', views.pool_settings, name='pool_settings'),
     path('', include('allauth.urls')),
 ]

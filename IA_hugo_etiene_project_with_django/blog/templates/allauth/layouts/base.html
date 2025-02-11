@@ -12,22 +12,13 @@
         
         <!-- Lien vers le fichier CSS -->
         <link rel="stylesheet" href="{% static '/css/authentification.css' %}">
+        <link rel="stylesheet" href="{% static '/css/header.css' %}">
         
         {% block extra_head %}
         {% endblock extra_head %}
     </head>
     <body>
         {% block body %}
-            {% if messages %}
-                <div class="messages">
-                    <strong>{% trans "Messages:" %}</strong>
-                    <ul>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
             <div class="menu">
                 <strong>{% trans "Menu:" %}</strong>
                 <ul>
