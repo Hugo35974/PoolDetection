@@ -1,5 +1,8 @@
 import json
+import os
+import sys
 import time
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -9,7 +12,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from ultralytics import YOLO
 
-
+Main_path = Path(__file__).parents[0]
+print(Main_path)
 class SwimmingPoolDetector:
     def __init__(self, model_path: str, person_model_path: str, expansion_factor: float = 1.1, size_threshold: int = 100, device="cpu"):
         self.pool_model = YOLO(model_path)
@@ -83,10 +87,10 @@ class SwimmingPoolDetector:
             frame = cv2.addWeighted(frame, 1, border_image, 1, 0)
         return frame
 
-video_path = "/Users/hugobenard/Documents/ISEN HUGO/IA/yolo/93705-642181946.mp4"
+video_path = os.path.join(Main_path,"data/video/93705-642181946.mp4")
 detector = SwimmingPoolDetector(
-    model_path='/Users/hugobenard/Documents/ISEN HUGO/IA/yolo/best/best.pt',
-    person_model_path='/Users/hugobenard/Documents/ISEN HUGO/IA/yolo/yolo11n.pt',
+    model_path=os.path.join(Main_path,'data/model/best.pt'),
+    person_model_path=os.path.join(Main_path,'data/model/yolo11n.pt'),
     expansion_factor=1.2,
     size_threshold=100, device="mps"
 )
