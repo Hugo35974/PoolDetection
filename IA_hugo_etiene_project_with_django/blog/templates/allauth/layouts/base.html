@@ -9,76 +9,74 @@
             {% block head_title %}
             {% endblock head_title %}
         </title>
-        
+
         <!-- Lien vers le fichier CSS -->
-        <link rel="stylesheet" href="{% static '/css/authentification.css' %}">
-        <link rel="stylesheet" href="{% static '/css/header.css' %}">
-        
+        <link rel="stylesheet" href="{% static 'css/authentification.css' %}">
+        <link rel="stylesheet" href="{% static 'css/header.css' %}">
+
         {% block extra_head %}
         {% endblock extra_head %}
     </head>
     <body>
         {% block body %}
             <div class="menu">
-                <strong>{% trans "Menu:" %}</strong>
-                <ul>
+                <div class="menu-left">
                     {% if user.is_authenticated %}
-                        {% url 'account_email' as email_url_ %}
-                        {% if email_url_ %}
-                            <li>
-                                <a href="{{ email_url_ }}">{% trans "Change Email" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'account_change_password' as change_password_url_ %}
-                        {% if change_password_url_ %}
-                            <li>
-                                <a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'socialaccount_connections' as connections_url_ %}
-                        {% if connections_url_ %}
-                            <li>
-                                <a href="{{ connections_url_ }}">{% trans "Account Connections" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'mfa_index' as mfa_url_ %}
-                        {% if mfa_url_ %}
-                            <li>
-                                <a href="{{ mfa_url_ }}">{% trans "Two-Factor Authentication" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'usersessions_list' as usersessions_list_url_ %}
-                        {% if usersessions_list_url_ %}
-                            <li>
-                                <a href="{{ usersessions_list_url_ }}">{% trans "Sessions" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'account_logout' as logout_url_ %}
-                        {% if logout_url_ %}
-                            <li>
-                                <a href="{{ logout_url_ }}">{% trans "Sign Out" %}</a>
-                            </li>
-                        {% endif %}
-                    {% else %}
-                        {% url 'account_login' as login_url_ %}
-                        {% if login_url_ %}
-                            <li>
-                                <a href="{{ login_url_ }}">{% trans "Sign In" %}</a>
-                            </li>
-                        {% endif %}
-                        {% url 'account_signup' as signup_url_ %}
-                        {% if signup_url_ %}
-                            <li>
-                                <a href="{{ signup_url_ }}">{% trans "Sign Up" %}</a>
-                            </li>
-                        {% endif %}
+                        <a href="{% url 'pool_settings' %}" class="back-button">{% trans "Back to Pool Settings" %}</a>
                     {% endif %}
-                </ul>
+                </div>
+                <div class="menu-right">
+                    {% if user.is_authenticated %}
+                        <div class="profile-circle" onclick="toggleDropdown()">
+                            <img src="{{ user.profile_picture_url }}" alt="Profile Picture">
+                        </div>
+                        <ul id="dropdown-menu" class="dropdown-menu">
+                            <li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+                            <li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+                            <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
+                        </ul>
+                    {% else %}
+                        <ul>
+                            <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
+                            <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
+                        </ul>
+                    {% endif %}
+                </div>
             </div>
             {% block content %}
             {% endblock content %}
         {% endblock body %}
         {% block extra_body %}
         {% endblock extra_body %}
+
+        <script>
+            function toggleDropdown() {
+                console.log("Dropdown toggled");
+                const dropdownMenu = document.getElementById('dropdown-menu');
+                if (dropdownMenu.style.display === 'block') {
+                    dropdownMenu.style.display = 'none';
+                    console.log("block");
+
+                } else {
+                    dropdownMenu.style.display = 'block';
+                    console.log("block");
+                }
+                console.log("Display style after toggle:", dropdownMenu.style.display);
+            }
+        
+            /*window.onclick = function(event) {
+                const dropdownMenu = document.getElementById('dropdown-menu');
+                if (!event.target.matches('.profile-circle') && !event.target.closest('.dropdown-menu')) {
+                    dropdownMenu.style.display = 'none';
+                }
+            }*/
+        
+            // Assurez-vous que le menu est masqué au chargement de la page
+            window.onload = function() {
+                const dropdownMenu = document.getElementById('dropdown-menu');
+                dropdownMenu.style.display = 'none';
+            }
+        </script>
+             
     </body>
 </html>

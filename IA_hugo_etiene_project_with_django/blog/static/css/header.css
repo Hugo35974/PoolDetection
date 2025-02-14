@@ -12,15 +12,39 @@
     right: 0;
     z-index: 1000;
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-.menu strong {
+.menu-left {
+    display: flex;
+    align-items: center;
+}
+
+.menu-left .back-button {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    margin-right: 20px;
+}
+
+.menu-left .back-button:hover {
+    color: #ffdd57;
+}
+
+.menu-right {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.menu-right strong {
     font-size: 1.2rem;
     margin-right: 15px;
 }
 
-.menu ul {
+.menu-right ul {
     list-style-type: none;
     padding: 0;
     display: flex;
@@ -28,19 +52,66 @@
     margin: 0;
 }
 
-.menu li {
+.menu-right li {
     display: inline;
 }
 
-.menu a {
+.menu-right a {
     color: white;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
 }
 
-.menu a:hover {
+.menu-right a:hover {
     color: #ffdd57;
+}
+
+/* Styles pour le cercle de la photo de profil */
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.profile-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Styles pour le menu déroulant */
+.dropdown-menu {
+    display: none; /* Masqué par défaut */
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    flex-direction: column; /* Affichage vertical */
+    gap: 10px; /* Espace entre les éléments */
+}
+
+.dropdown-menu li {
+    margin: 0;
+}
+
+.dropdown-menu a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.dropdown-menu a:hover {
+    color: #0056b3;
 }
 
 /* Suppression du contenu principal en dehors de la banderole */
@@ -52,13 +123,17 @@ body {
 
 /* Adaptabilité pour petits écrans */
 @media (max-width: 600px) {
-    .menu ul {
+    .menu-right ul {
         flex-direction: column;
         gap: 10px;
     }
 
-    .menu strong {
+    .menu-right strong {
         display: block;
+        margin-bottom: 10px;
+    }
+
+    .menu-left .back-button {
         margin-bottom: 10px;
     }
 }
