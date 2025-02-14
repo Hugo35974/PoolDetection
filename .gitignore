@@ -1,5 +1,5 @@
 # Fichiers et dossiers générés par Python
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *.so
 *.egg-info/
@@ -68,3 +68,6 @@ secrets/
 # MacOS et Linux
 .DS_Store
 .nox/
+
+# Fichier lourd
+*.mp4

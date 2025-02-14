@@ -1,7 +1,5 @@
 import json
 import os
-import sys
-import time
 from pathlib import Path
 
 import cv2
@@ -13,15 +11,14 @@ from django.views.decorators.csrf import csrf_exempt
 from ultralytics import YOLO
 
 Main_path = Path(__file__).parents[0]
-print(Main_path)
+
 class SwimmingPoolDetector:
     def __init__(self, model_path: str, person_model_path: str, expansion_factor: float = 1.1, size_threshold: int = 100, device="cpu"):
         self.pool_model = YOLO(model_path)
         self.person_model = YOLO(person_model_path)
         self.pool_detected = False
-        self.pool_box = None
         self.pool_mask = None
-        self.dilated_mask = None 
+        self.dilated_mask = None
         self.expansion_factor = expansion_factor
         self.size_threshold = size_threshold
         self.device = device
@@ -45,15 +42,16 @@ class SwimmingPoolDetector:
                 annotated_image = cv2.addWeighted(annotated_image, 1, mask_colored, 1, 0)
                 cv2.rectangle(annotated_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 self.pool_detected = True
-                self.pool_box = (x1, y1, x2, y2)
                 self.pool_mask = mask_binary
 
-                # Calculer et enregistrer le masque dilaté
-                kernel_size = int(self.expansion_factor * 10)
-                kernel = np.ones((kernel_size, kernel_size), np.uint8)
-                self.dilated_mask = cv2.dilate(self.pool_mask, kernel, iterations=1)
+                self.calculate_mask()
 
         return annotated_image
+    
+    def calculate_mask(self):
+        kernel_size = int(self.expansion_factor * 10)
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        self.dilated_mask = cv2.dilate(self.pool_mask, kernel, iterations=1)
 
     def detect_person_and_classify(self, frame: np.ndarray) -> np.ndarray:
         result = self.person_model.predict(frame, verbose=False)[0]
@@ -131,10 +129,7 @@ def set_params(request):
         detector.expansion_factor = float(data.get("expansion_factor", 1.2))
         detector.size_threshold = int(data.get("size_threshold", 100))
 
-        # Recalculer le masque dilaté si le facteur d'expansion change
         if detector.pool_mask is not None:
-            kernel_size = int(detector.expansion_factor * 10)
-            kernel = np.ones((kernel_size, kernel_size), np.uint8)
-            detector.dilated_mask = cv2.dilate(detector.pool_mask, kernel, iterations=1)
+            detector.calculate_mask()
 
         return JsonResponse({"message": "Paramètres mis à jour"})
