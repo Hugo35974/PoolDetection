@@ -1,0 +1,70 @@
+# Fichiers et dossiers générés par Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.egg
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+.conda/
+*.conda
+
+# Fichiers de logs et de débogage
+*.log
+*.out
+*.err
+
+# Dépendances installées
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Fichiers de configuration utilisateur
+ipython/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+*.cover
+*.py,cover
+
+# Bases de données locales
+*.sqlite3
+*.db
+
+# Fichiers de tests et rapports
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Sphinx documentation
+docs/_build/
+docs/build/
+docs/source/api/
+
+# Docker et CI/CD
+docker-compose.override.yml
+.env
+.envrc
+secrets/
+*.env.local
+
+# JetBrains IDEs (PyCharm)
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+.settings/
+
+# MacOS et Linux
+.DS_Store
+.nox/
