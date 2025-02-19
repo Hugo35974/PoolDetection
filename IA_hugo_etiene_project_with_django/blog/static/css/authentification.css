@@ -11,6 +11,14 @@ body {
   min-height: 100vh;
 }
 
+.logo {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    display: block; 
+    margin: 0 auto;
+}
+
 /* Container principal */
 .container {
   background-color: #ffffff;
@@ -19,7 +27,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;
-  text-align: center; /* Center text within the container */
+  text-align: center;
 }
 
 .containerchangepassword {
@@ -29,120 +37,139 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   width: 100%;
-  text-align: center; /* Center text within the container */
+  text-align: center;
+}
+
+/* Styles spécifiques pour la page de connexion */
+.login {
+    background-image: url('../images/piscine_background.jpg'); /* Remplacez par le chemin correct de votre image */
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+.login .container {
+    background: rgba(255, 255, 255, 0.8); /* Fond semi-transparent pour améliorer la lisibilité */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1; /* Assurez-vous que le conteneur est au-dessus du fond */
+}
+
+.login .logo {
+    max-width: 100px; /* Ajuste la taille selon tes besoins */
+    height: auto;
+    position: absolute; /* Positionnement absolu */
+    top: 20px;
+    /*right: 20px;*/
+    left: 20px;
+}
+
+.login .centered-text {
+    color: #333;
 }
 
 /* Titre principal */
 h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
 }
 
 /* Paragraphe descriptif */
 p {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 20px;
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
 }
 
 /* Formulaire */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 /* Champs de formulaire */
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
-input[type="text"]{
-  margin-right: 18px;
-}
-input[type="password"] {
-  margin-right: 50px;
-  margin-bottom: 40px;
-}
-
 
 /* Boutons */
 button[type="submit"] {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
-/* Lien d'inscription */
-a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
+/* Adaptabilité pour les écrans de taille moyenne */
+@media (max-width: 992px) {
+    .container {
+        max-width: 95%;
+    }
+    .login .logo {
+        max-width: 80px;
+    }
 }
 
-a:hover {
-  text-decoration: underline;
+/* Adaptabilité pour les tablettes */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .login .logo {
+        max-width: 60px;
+    }
 }
 
-/* Séparateur */
-hr {
-  border: 0;
-  height: 1px;
-  background-color: #ddd;
-  margin: 20px 0;
-}
-
-/* Groupement de boutons */
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.button-group button {
-  background-color: transparent;
-  border: 1px solid #007bff;
-  color: #007bff;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.button-group button:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-/* Adaptabilité pour les petits écrans */
+/* Adaptabilité pour les téléphones */
 @media (max-width: 480px) {
-  .container {
-      padding: 20px;
-  }
+    .login .container {
+        padding: 20px;
+    }
 
-  h1 {
-      font-size: 1.5rem;
-  }
+    h1 {
+        font-size: 1.5rem;
+    }
 
-  button {
-      padding: 10px;
-  }
-}
+    button {
+        padding: 10px;
+    }
 
-/* Centrer le texte */
-.centered-text {
-  text-align: center;
+    .login .logo {
+        max-width: 40px;
+    }
 }
