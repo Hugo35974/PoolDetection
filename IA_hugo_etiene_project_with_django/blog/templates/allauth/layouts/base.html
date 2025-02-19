@@ -28,7 +28,7 @@
                 <div class="menu-right">
                     {% if user.is_authenticated %}
                         <div class="profile-circle" onclick="toggleDropdown()">
-                            <img src="{{ user.profile_picture_url }}" alt="Profile Picture">
+                            <img src="{% static 'images/default_profile.png' %}" alt="Profile Picture">
                         </div>
                         <ul id="dropdown-menu" class="dropdown-menu">
                             <li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
@@ -55,28 +55,24 @@
                 const dropdownMenu = document.getElementById('dropdown-menu');
                 if (dropdownMenu.style.display === 'block') {
                     dropdownMenu.style.display = 'none';
-                    console.log("block");
-
                 } else {
                     dropdownMenu.style.display = 'block';
-                    console.log("block");
                 }
                 console.log("Display style after toggle:", dropdownMenu.style.display);
             }
-        
+
             /*window.onclick = function(event) {
                 const dropdownMenu = document.getElementById('dropdown-menu');
                 if (!event.target.matches('.profile-circle') && !event.target.closest('.dropdown-menu')) {
                     dropdownMenu.style.display = 'none';
                 }
             }*/
-        
+
             // Assurez-vous que le menu est masqué au chargement de la page
             window.onload = function() {
                 const dropdownMenu = document.getElementById('dropdown-menu');
                 dropdownMenu.style.display = 'none';
             }
         </script>
-             
     </body>
 </html>

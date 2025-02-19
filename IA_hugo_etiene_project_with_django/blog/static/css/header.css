@@ -69,8 +69,8 @@
 
 /* Styles pour le cercle de la photo de profil */
 .profile-circle {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
@@ -84,7 +84,7 @@
 
 /* Styles pour le menu déroulant */
 .dropdown-menu {
-    display: none; /* Masqué par défaut */
+    display: none;
     position: absolute;
     top: 50px;
     right: 0;
@@ -93,25 +93,33 @@
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     list-style-type: none;
-    padding: 10px;
+    padding: 15px; /* Augmente l'espace intérieur */
     margin: 0;
-    flex-direction: column; /* Affichage vertical */
-    gap: 10px; /* Espace entre les éléments */
+    flex-direction: column;
+    gap: 10px; /* Espacement entre les éléments */
+    min-width: 150px; /* Augmente la largeur du menu */
 }
 
+/* Espacement entre chaque élément */
 .dropdown-menu li {
-    margin: 0;
+    padding: 10px 15px; /* Ajoute du padding pour agrandir la zone cliquable */
+    width: 100%; /* Assure que les liens prennent toute la largeur */
 }
 
+/* Style des liens du menu déroulant */
 .dropdown-menu a {
     color: #007bff;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s;
+    display: block; /* Permet de prendre toute la largeur pour un meilleur clic */
+    transition: color 0.3s, background-color 0.3s;
 }
 
+/* Effet au survol */
 .dropdown-menu a:hover {
     color: #0056b3;
+    background-color: #f1f1f1;
+    border-radius: 5px;
 }
 
 /* Suppression du contenu principal en dehors de la banderole */

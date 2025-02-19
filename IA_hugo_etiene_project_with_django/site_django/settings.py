@@ -61,6 +61,14 @@ LOGIN_REDIRECT_URL = '/site/pool_settings/'
 LOGOUT_REDIRECT_URL = '/site/login/'
 LOGIN_URL = '/site/login/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'  # Remplacez par votre serveur SMTP
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@example.com'
+EMAIL_HOST_PASSWORD = 'your_password'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
