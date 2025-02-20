@@ -1,6 +1,6 @@
-# Détection de Personnes (Adultes et Enfants) autour d'une Piscine
+# Détection de Personnes autour d'une Piscine
 
-![v1.0](https://img.shields.io/badge/Version-1.0-green)
+![v1.0](https://img.shields.io/badge/Version-1.0-%2300FF00)
 
 ## Description
 Ce projet a pour objectif de détecter les personnes adultes et enfants autour d'une piscine à partir d'une vidéo.
