@@ -1,10 +1,10 @@
 /* Styles généraux */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9;
+  background-color: #1e1e2f;
   color: #333;
   margin: 0;
-  padding: 0;
+  padding: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -128,6 +128,85 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #0056b3;
+}
+
+/*Page pool_setting*/
+.video-container {
+    text-align: center;
+    margin-bottom: 20px;
+    margin: 0 auto;
+}
+
+.video-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+    text-align: center;
+    margin: 0 auto;
+}
+
+.video-container h1 {
+    font-size: 2rem;
+    color: #ffcc00;
+    margin-bottom: 20px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.settings-container {
+    background-color: #252535;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto; /* Centrer horizontalement */
+}
+
+.settings-container h2 {
+    color: #ffcc00;
+    margin-bottom: 10px;
+}
+
+.settings-container label {
+    display: block;
+    color: #ffcc00;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.settings-container input {
+    width: calc(100% - 22px); /* Ajustement pour le padding */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.settings-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.settings-container button:hover {
+    background-color: #e6b800;
+}
+
+#update-message {
+    display: none;
+    color: #0f0;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
 }
 
 /* Adaptabilité pour les écrans de taille moyenne */
