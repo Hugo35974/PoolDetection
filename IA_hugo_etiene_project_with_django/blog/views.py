@@ -4,20 +4,22 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-import torch
 import torchvision.transforms as transforms
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from ultralytics import YOLO
+from django.core.mail import send_mail
+from django.conf import settings
 
+from email.mime.text import MIMEText
 Main_path = Path(__file__).parents[0]
 
 class SwimmingPoolDetector:
     def __init__(self, model_path: str, person_model_path: str,
                  expansion_factor: float = 1.1, size_threshold: int = 100,
-                 device="cpu", known_height=1.70):
+                 device="cpu", known_height=170):
         self.pool_model = YOLO(model_path)
         self.person_model = YOLO(person_model_path)
 
@@ -31,9 +33,28 @@ class SwimmingPoolDetector:
         self.scale_factors = {}
         self.max_depth_points = 100
         self.grid = False
+        self.child_detected_frames = 0
+        self.email_sent = False
         
 
-    def create_grid(self, frame, grid_size=(10, 10), expansion_factor=3):
+    def send_alert_email(self):
+        subject = "Alerte Enfant Détecté"
+        message = "Un enfant a été détecté sur plus de 3 frames consécutives près de la piscine."
+        recipient_list = ['destinataire@gmail.com']
+
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                recipient_list,
+                fail_silently=False,
+            )
+            print("Alerte envoyée par email.")
+        except Exception as e:
+            print(f"Erreur lors de l'envoi de l'email: {e}")
+
+    def create_grid(self, frame, grid_size=(40, 20), expansion_factor=2):
         """Crée une grille de points autour du contour de la piscine avec expansion."""
         if self.pool_mask is None:
             print("Piscine non détectée. Impossible de créer la grille.")
@@ -81,10 +102,10 @@ class SwimmingPoolDetector:
             color = (0, 0, 255) if self.scale_factors[point] is None else (0, 255, 0)
             cv2.circle(frame, point, 5, color, -1)
 
-    def update_scale_factor(self, frame, detected_feet_box):
+    def update_scale_factor(self, detected_feet_box):
         """Met à jour le facteur d'échelle si les pieds sont sur un point de calibration."""
         x1, y1, x2, y2 = detected_feet_box
-        feet_center = ((x1 + x2) // 2, (y1 + y2) // 2)
+        feet_center = ((x1 + x2) // 2, y2)
         self.scale_factors_dict = {}
         for point in self.grid_points:
             if self.is_near_point(feet_center, point) and self.scale_factors[point] is None:
@@ -92,15 +113,7 @@ class SwimmingPoolDetector:
                 self.scale_factors[point] = self.known_height / detected_height
                 print(f"Point {point} validé avec un facteur d'échelle de {self.scale_factors[point]}")
 
-    #     self.scale_factors_dict = {str(key): value for key, value in self.scale_factors.items()}
-
-    #     # Sauvegarde dans un fichier JSON
-    #     with open("scale_factors_grid.json", "w") as f:
-    #         json.dump(self.scale_factors_dict, f, indent=4)
-
-    #     print("Grille et scale factors sauvegardés dans scale_factors_grid.json")
-
-    def is_near_point(self, feet_center, point, threshold=10):
+    def is_near_point(self, feet_center, point, threshold=50):
         """Vérifie si les pieds sont proches d'un point de calibration."""
         distance = np.linalg.norm(np.array(feet_center) - np.array(point))
         return distance < threshold
@@ -109,22 +122,21 @@ class SwimmingPoolDetector:
         """Vérifie si tous les points ont été validés."""
         return all(factor is not None for factor in self.scale_factors.values())
 
-    def get_calibration_coefficient(self, y_position: int, image_height: int) -> float:
-        """
-        Retourne un coefficient de calibration linéaire basé sur la position verticale de l'objet
-        dans l'image. Plus l'objet est bas (près de la caméra), plus le coefficient sera élevé.
-        """
-        relative_position = y_position / image_height
-        calibration_factor = 1 - relative_position  # Inversement proportionnel à la hauteur (bas -> haut)
-        return calibration_factor
+    def adjust_size_based_on_perspective(self, x1, y1, x2, y2):
+        """Ajuste la taille d'une personne en fonction du point de calibration le plus proche."""
+        height = y2 - y1
+        feet_center = ((x1 + x2) // 2, y2)  # (x, y) pour éviter l'erreur d'array inhomogène
 
-    def adjust_size_based_on_perspective(self, x1, y1, x2, y2, image_height: int) -> float:
-        """Ajuste la taille d'une personne en fonction de la perspective."""
-        initial_size = y2 - y1
-        perspective_factor = self.get_calibration_coefficient(y1, image_height)
-        adjusted_size = initial_size * perspective_factor
+        # Trouver le point de calibration le plus proche
+        nearest_point = min(self.grid_points, key=lambda p: np.linalg.norm(np.array(feet_center) - np.array(p)))
 
-        return adjusted_size
+        # Récupérer le facteur d'échelle et s'assurer qu'il est bien défini
+        scale_factor = self.scale_factors.get(nearest_point, 1.0)
+        if scale_factor is None:  # Sécurité supplémentaire
+            scale_factor = 1.0
+
+        return scale_factor * height
+
 
     def classify_person(self, adjusted_size: float) -> str:
         """Classe la personne comme 'enfant' ou 'adulte' selon sa taille ajustée."""
@@ -137,8 +149,6 @@ class SwimmingPoolDetector:
         result = self.person_model.predict(frame, verbose=False)[0]
         annotated_image = frame.copy()
 
-        image_height, image_width, _ = frame.shape
-
         if result.boxes is not None and len(result.boxes) > 0:
             boxes = result.boxes.xyxy
             confs = result.boxes.conf
@@ -147,18 +157,14 @@ class SwimmingPoolDetector:
             for box, conf, cls in zip(boxes, confs, classes):
                 if int(cls) == 0 and conf > 0.5:  # Vérifie si c'est une personne avec une confiance élevée
                     x1, y1, x2, y2 = map(int, box)
-                    height = y2 - y1
-                    width = x2 - x1
 
-                    # Ajustement de la taille
-                    adjusted_size = self.adjust_size_based_on_perspective(x1, y1, x2, y2, image_height)
-
-                    # Classification
+                    adjusted_size = self.adjust_size_based_on_perspective(x1, y1, x2, y2)
                     person_class = self.classify_person(adjusted_size)
 
-                    # Choisir la couleur du cadre en fonction de la classification
                     if person_class == "Enfant":
                         rectangle_color = (0, 0, 255)  # Rouge pour enfant
+                        enfant_detecte = True
+
                     else:
                         rectangle_color = (0, 255, 0)  # Vert pour adulte
 
@@ -168,8 +174,16 @@ class SwimmingPoolDetector:
                     cv2.putText(annotated_image, f"{person_class}",
                                 (x1, y1 - 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3)
 
-                    # Mettre à jour le facteur d'échelle si les pieds sont détectés
-                    self.update_scale_factor(annotated_image, (x1, y1, x2, y2))
+                    self.update_scale_factor((x1, y1, x2, y2))
+
+                    if enfant_detecte:
+                        self.child_detected_frames += 1
+                    else:
+                        self.child_detected_frames = 0
+
+                    if self.child_detected_frames > 3 and not self.email_sent:
+                        self.send_alert_email()
+                        self.email_sent = True
 
         return annotated_image
 
