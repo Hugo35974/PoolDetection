@@ -62,12 +62,16 @@ LOGOUT_REDIRECT_URL = '/site/login/'
 LOGIN_URL = '/site/login/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'  # Remplacez par votre serveur SMTP
+EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your_email@example.com'
-EMAIL_HOST_PASSWORD = 'your_password'
+EMAIL_USE_SSL = False
+#EMAIL_PORT = 465
+#EMAIL_USE_TLS = False
+#EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'etienne.duclos@isen-ouest.yncrea.fr'
+EMAIL_HOST_PASSWORD = 'xxx'
+DEFAULT_FROM_EMAIL = 'etienne.duclos@isen-ouest.yncrea.fr'
 
 
 MIDDLEWARE = [
