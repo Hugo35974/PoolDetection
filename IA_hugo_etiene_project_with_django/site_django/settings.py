@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 AUTH_USER_MODEL = 'blog.CustomUser'  # Modèle utilisateur personnalisé
 
@@ -69,11 +70,13 @@ EMAIL_USE_SSL = False
 #EMAIL_PORT = 465
 #EMAIL_USE_TLS = False
 #EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'etienne.duclos@isen-ouest.yncrea.fr'
-EMAIL_HOST_PASSWORD = 'xxx'
-DEFAULT_FROM_EMAIL = 'etienne.duclos@isen-ouest.yncrea.fr'
-
-
+load_dotenv()
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 31536000  # 1 an
+# SESSION_COOKIE_SECURE = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
