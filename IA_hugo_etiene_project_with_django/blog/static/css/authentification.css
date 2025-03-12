@@ -135,6 +135,7 @@ button[type="submit"]:hover {
     text-align: center;
     margin-bottom: 20px;
     margin: 0 auto;
+    display: block;
 }
 
 .video-container img {

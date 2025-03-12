@@ -11,54 +11,93 @@
         <div class="video-container">
             <h1>🎥 Streaming Vidéo en Temps Réel</h1>
             <img id="video-stream" src="{% url 'video_stream' %}" alt="Flux vidéo">
+        
         </div>
+        
 
         <div class="settings-container">
-            <h2>🔧 Paramètres</h2>
+            <h2>🔧 Paramètres </h2>
 
+            <button id="start-calibration">Démarrer la Calibration</button>
+                <div class="calibration-status">
+                    <p>Pourcentage de calibration : <span id="calibration-percentage">0%</span></p>
+                </div>
+            <button id="stop-calibration">Arrêter la Calibration</button>
             <label for="expansion_factor">Facteur d'expansion :</label>
-            <input type="number" id="expansion_factor" step="0.1" value="1.2">
+            <input type="number" id="expansion_factor" step="0.1" value="2">
 
             <label for="size_threshold">Seuil de taille Enfant/Adulte :</label>
-            <input type="number" id="size_threshold" value="100">
+            <input type="number" id="size_threshold" value="130">
 
             <button onclick="updateParams()">Mettre à jour</button>
 
             <p id="update-message">✅ Paramètres mis à jour avec succès !</p>
         </div>
     </div>
-
     <script>
-        function updateParams() {
-            const expansionFactor = document.getElementById("expansion_factor").value;
-            const sizeThreshold = document.getElementById("size_threshold").value;
-
-            fetch("{% url 'set_params' %}", {
-                method: "POST",
+        document.getElementById('start-calibration').addEventListener('click', function() {
+            fetch("{% url 'start_calibration' %}", {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({
-                    expansion_factor: expansionFactor,
-                    size_threshold: sizeThreshold
-                })
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                }
+            }).then(response => response.json());
+        });
+    
+        document.getElementById('stop-calibration').addEventListener('click', function () {
+            fetch("{% url 'stop_calibration' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                }
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("update-message").style.display = "block";
-                setTimeout(() => {
-                    document.getElementById("update-message").style.display = "none";
-                }, 3000);
-
-                // Force le rechargement de l'image
-                document.getElementById("video-stream").src = "{% url 'video_stream' %}?" + new Date().getTime();
+                if (data.status === "success") {
+                    const percentage = data.calibration.percentage;
+                    document.getElementById("calibration-percentage").innerText = `${percentage}%`;
+                } else {
+                    console.error("Erreur :", data.message);
+                }
             })
-            .catch(error => console.error("Erreur:", error));
-        }
-
-        function getCSRFToken() {
-            return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1] || "";
-        }
+            .catch(error => console.error("Erreur :", error));
+        });
+    
+        function updateParams() {
+        const expansionFactor = document.getElementById("expansion_factor").value;
+        const sizeThreshold = document.getElementById("size_threshold").value;
+    
+        fetch("{% url 'set_params' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+                expansion_factor: expansionFactor,
+                size_threshold: sizeThreshold
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("update-message").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("update-message").style.display = "none";
+            }, 3000);
+    
+            // Force le rechargement de l'image
+            document.getElementById("video-stream").src = "{% url 'video_stream' %}?" + new Date().getTime();
+            document.getElementById("video-stream").style.display = "block";
+    
+        })
+        .catch(error => console.error("Erreur:", error));
+    }
+    
+    function getCSRFToken() {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1] || "";
+    }
     </script>
+    
 {% endblock content %}
