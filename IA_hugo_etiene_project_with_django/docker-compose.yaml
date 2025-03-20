@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  app:
+    image: python:3.10  # Utilise l'image Python 3.10
+    container_name: python_app
+    working_dir: /app  # Définit le dossier de travail dans le conteneur
+    volumes:
+      - .:/app  # Monte ton projet local dans le conteneur
+    ports:
+      - "8000:8000"  # Expose le port 8000 du conteneur vers l'hôte
+    command: >
+      sh -c "
+      apt-get update &&
+      apt-get install -y libgl1-mesa-glx &&
+      python -m venv venv &&
+      . venv/bin/activate &&
+      pip install -r requirements.txt &&
+      python manage.py runserver 0.0.0.0:8000"
